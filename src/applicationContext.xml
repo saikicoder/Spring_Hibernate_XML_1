@@ -1,44 +1,53 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-        <!DOCTYPE beans PUBLIC
-                "-//SPRING/DTD BEAN 2.0//EN"
-                "http://www.springframework.org/dtd/spring-beans-2.0.dtd">
+<?xml version="1.0" encoding="utf-8"?>
 
-
-<beans >
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/context/spring-context.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+       ">
         <!-- Datasource (Connection properties) -->
-        <bean id="datasource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <bean id="datasource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
                 <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
                 <property name="url" value="jdbc:mysql://localhost:3306/spring_hibernate?characterEncoding=latin1"></property>
                 <property name="username" value="root"></property>
                 <property name="password" value="root"></property>
         </bean>
 
-        <!-- Session Factory -->
-        <bean id="sessionfactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
-                <property name="dataSource" ref="datasource"></property>
-                <property name="mappingResources">
-                        <list>
-                                <value>Employee.hbm.xml</value>
-                        </list>
-                </property>
+        <tx:annotation-driven transaction-manager="txManagerBean"/>
 
+        <bean id="txManagerBean" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+                <property name="sessionFactory" ref="sessionfactoryBean"></property>
+        </bean>
+
+        <!-- Session Factory -->
+        <bean id="sessionfactoryBean" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+                <property name="dataSource" ref="datasource"></property>
+                <property name="mappingResources" value="Employee.hbm.xml"></property>
                 <property name="hibernateProperties">
                         <props>
                                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
                                 <prop key="hibernate.hbm2ddl.auto">update</prop>
                                 <prop key="hibernate.show_sql">true</prop>
+                                <prop key="hibernate.default_schema">system</prop>
                         </props>
                 </property>
         </bean>
 
         <!-- hibernate template (reference to session factory)-->
-        <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-                <property name="sessionFactory" ref="sessionfactory"></property>
+        <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+                <property name="sessionFactory" ref="sessionfactoryBean"></property>
         </bean>
 
         <!-- DAO Class -->
-        <bean id="empdao" class="EmployeeDAO">
-                <property name="template" ref="hibernatetemplate"></property>
+        <bean id="empdaoBean" class="com.one.dao.EmployeeDAO">
+                <property name="template" ref="hibernateTemplate"></property>
         </bean>
 
 

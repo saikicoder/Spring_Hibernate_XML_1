@@ -2,7 +2,7 @@ package com.one.dao;
 
 import com.one.model.Employee;
 import org.springframework.orm.hibernate5.HibernateTemplate;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +17,17 @@ public class EmployeeDAO {
   this.template = hibernateTemplate;
  }
 
+ @Transactional
  public void insertEmp(Employee e){
   template.save(e);
  }
 
+ @Transactional
  public void updateEmp(Employee e){
   template.update(e);
  }
 
+ @Transactional
  public void deleteEmp(Employee e){
   template.delete(e);
  }

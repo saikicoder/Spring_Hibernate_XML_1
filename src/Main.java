@@ -7,8 +7,8 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 public class Main {
     public static void main(String[] args) {
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        EmployeeDAO employeeDAO = context.getBean("empdao",EmployeeDAO.class);
+        ApplicationContext context = new FileSystemXmlApplicationContext("classpath:applicationContext.xml");
+        EmployeeDAO employeeDAO = context.getBean("empdaoBean",EmployeeDAO.class);
         Employee emp = new Employee();
         emp.setName("Bhavya");
         emp.setDepartment("Information technology");
